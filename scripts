@@ -1,0 +1,93 @@
+// Object literal to store salon and pets information
+const salon = {
+    name: "Fashion Pet Salon",
+    address: "123 Pet Street, Petville",
+    phone: "(123) 456-7890",
+    pets: [],  // Array to store pet objects
+    displaySalonInfo: function () {
+        document.getElementById('salon-name').innerHTML = this.name;
+        document.getElementById('salon-address').innerHTML = this.address;
+        document.getElementById('salon-phone').innerHTML = this.phone;
+    },
+    addPet: function(pet) {
+        this.pets.push(pet);
+        displayRow(); // Use displayRow to update the table after adding a pet
+    },
+    removePet: function(index) {
+        this.pets.splice(index, 1); // Remove the pet from the array by index
+        displayRow(); // Re-render the table after deletion
+    }
+};
+
+// Display the salon information on the index.html
+function displaySalonInfo() {
+    salon.displaySalonInfo();
+}
+
+// Constructor function to create a Pet
+function Pet(name, age, gender, breed, service, type, color, paymentMethod) {
+    this.name = name;
+    this.age = age;
+    this.gender = gender;
+    this.breed = breed;
+    this.service = service;
+    this.type = type;
+    this.color = color; // New attribute
+    this.paymentMethod = paymentMethod; // New attribute for payment method
+}
+
+// Function to display pets in table rows
+function displayRow() {
+    const petList = document.getElementById('pets');
+    petList.innerHTML = '';  // Clear the current list
+    salon.pets.forEach((pet, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${pet.name}</td>
+            <td>${pet.age}</td>
+            <td>${pet.gender}</td>
+            <td>${pet.breed}</td>
+            <td>${pet.service}</td>
+            <td>${pet.type}</td>
+            <td>${pet.color}</td>
+            <td>${pet.paymentMethod}</td>
+            <td>
+                <button class="btn btn-danger" onclick="removePet(${index})">Delete</button>
+            </td>
+        `;
+        petList.appendChild(row);
+    });
+}
+
+// Function to handle form submission and add a new pet
+function registerPet(event) {
+    event.preventDefault();  // Prevent page reload on form submission
+
+    const name = document.getElementById('pet-name').value;
+    const age = document.getElementById('pet-age').value;
+    const gender = document.getElementById('pet-gender').value;
+    const breed = document.getElementById('pet-breed').value;
+    const service = document.getElementById('pet-service').value;
+    const type = document.getElementById('pet-type').value;
+    const color = document.getElementById('pet-color').value; // New field
+    const paymentMethod = document.getElementById('pet-payment').value; // New field
+
+    const newPet = new Pet(name, age, gender, breed, service, type, color, paymentMethod);
+
+    salon.addPet(newPet);  // Add the new pet to the salon's list
+    clearForm();  // Clear the form fields
+}
+
+// Function to remove a pet from the list
+function removePet(index) {
+    salon.removePet(index);  // Remove the pet by index from the salon's list
+}
+
+// Function to clear the form fields
+function clearForm() {
+    document.getElementById('pet-form').reset();
+}
+
+// Initialize the page by displaying salon info and existing pets
+displaySalonInfo();
+displayRow();  // Display the pets in table format

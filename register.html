@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register a Pet - Fashion Pet Salon</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <header>
+            <h1 class="text-center">Register a New Pet</h1>
+            <p class="text-center">Fill in the details below to register your pet.</p>
+        </header>
+
+        <!-- Pet Registration Form -->
+        <form id="pet-form" onsubmit="registerPet(event)">
+            <div class="form-group">
+                <label for="pet-name">Pet Name:</label>
+                <input type="text" class="form-control" id="pet-name" required>
+                <div id="name-error" class="text-danger mt-2"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="pet-age">Pet Age:</label>
+                <input type="number" class="form-control" id="pet-age" required>
+                <div id="age-error" class="text-danger mt-2"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="pet-gender">Pet Gender:</label>
+                <select class="form-control" id="pet-gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pet-breed">Pet Breed:</label>
+                <input type="text" class="form-control" id="pet-breed" required>
+                <div id="breed-error" class="text-danger mt-2"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="pet-service">Service:</label>
+                <input type="text" class="form-control" id="pet-service" required>
+                <div id="service-error" class="text-danger mt-2"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="pet-type">Pet Type:</label>
+                <select class="form-control" id="pet-type" required>
+                    <option value="Dog">Dog</option>
+                    <option value="Cat">Cat</option>
+                    <option value="Bird">Bird</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pet-color">Pet Color:</label>
+                <input type="text" class="form-control" id="pet-color" required>
+                <div id="color-error" class="text-danger mt-2"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="pet-payment">Payment Method:</label>
+                <select class="form-control" id="pet-payment" required>
+                    <option value="Cash">Cash</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Online">Online</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Register Pet</button>
+        </form>
+
+        <!-- Notification Area -->
+        <div id="notification" class="mt-3" style="display: none;"></div>
+
+        <footer class="text-center mt-4">
+            <a href="index.html" class="btn btn-secondary">Back to Pet Salon</a>
+        </footer>
+    </div>
+
+    <!-- jQuery script for form validation and notifications -->
+    <script>
+        // Constructor function for Pet objects
+        function Pet(name, age, gender, breed, service, type, color, paymentMethod) {
+            this.name = name;
+            this.age = age;
+            this.gender = gender;
+            this.breed = breed;
+            this.service = service;
+            this.type = type;
+            this.color = color;
+            this.paymentMethod = paymentMethod;
+        }
+
+        // Array to store pets
+        const salon = {
+            pets: [],
+            addPet: function(pet) {
+                this.pets.push(pet);
+            }
+        };
+
+        // Function to display notifications
+        function showNotification(message, type) {
+            const notification = $('#notification');
+            notification.removeClass(); // Clear previous classes
+            notification.addClass(`alert alert-${type}`); // Add new class (success or danger)
+            notification.text(message); // Set the notification message
+            notification.fadeIn(); // Show the notification
+            setTimeout(function() {
+                notification.fadeOut(); // Hide the notification after 3 seconds
+            }, 3000);
+        }
+
+        // Function to handle form submission and pet registration
+        function registerPet(event) {
+            event.preventDefault();  // Prevent the form from submitting
+
+            // Get form values
+            const name = $('#pet-name').val();
+            const age = $('#pet-age').val();
+            const gender = $('#pet-gender').val();
+            const breed = $('#pet-breed').val();
+            const service = $('#pet-service').val();
+            const type = $('#pet-type').val();
+            const color = $('#pet-color').val();
+            const paymentMethod = $('#pet-payment').val();
+
+            // Validation
+            let valid = true;
+            $('#notification').hide();  // Hide the notification initially
+
+            if (!name || !age || !breed || !service || !color || !paymentMethod) {
+                showNotification('All fields are required.', 'danger');
+                valid = false;
+            }
+
+            if (isNaN(age) || age <= 0) {
+                showNotification('Age must be a valid number greater than 0.', 'danger');
+                valid = false;
+            }
+
+            // If the form is valid, register the pet
+            if (valid) {
+                const newPet = new Pet(name, age, gender, breed, service, type, color, paymentMethod);
+                salon.addPet(newPet);
+                clearForm();
+                showNotification('Pet registered successfully!', 'success');
+            }
+        }
+
+        // Function to clear the form after registration
+        function clearForm() {
+            $('#pet-form')[0].reset();
+        }
+    </script>
+
+</body>
+</html>

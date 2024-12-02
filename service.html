@@ -1,0 +1,125 @@
+<!-- services.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Service - Fashion Pet Salon</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <header>
+            <h1 class="text-center">Register a New Service</h1>
+            <p class="text-center">Fill in the details below to register a new service for the pet salon.</p>
+        </header>
+
+        <!-- Service Registration Form -->
+        <form id="service-form" onsubmit="registerService(event)">
+            <div class="form-group">
+                <label for="service-description">Service Description:</label>
+                <input type="text" class="form-control" id="service-description" required>
+                <div id="description-error" class="text-danger mt-2"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="service-price">Price:</label>
+                <input type="text" class="form-control" id="service-price" required>
+                <div id="price-error" class="text-danger mt-2"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Register Service</button>
+        </form>
+
+        <!-- Notification Area -->
+        <div id="notification" class="mt-3" style="display: none;"></div>
+
+        <footer class="text-center mt-4">
+            <a href="index.html" class="btn btn-secondary">Back to Home</a>
+        </footer>
+    </div>
+
+    <!-- jQuery script for form validation, local storage handling, and notifications -->
+    <script>
+        // Constructor for Service objects
+        function Service(description, price) {
+            this.description = description;
+            this.price = price;
+        }
+
+        // Function to show notifications (success or error messages)
+        function showNotification(message, type) {
+            const notification = $('#notification');
+            notification.removeClass(); // Clear previous classes
+            notification.addClass(`alert alert-${type}`); // Add success or danger class
+            notification.text(message); // Set the notification message
+            notification.fadeIn(); // Show the notification
+            setTimeout(function() {
+                notification.fadeOut(); // Hide the notification after 3 seconds
+            }, 3000);
+        }
+
+        // Load services from local storage
+        function loadServices() {
+            const services = localStorage.getItem('services');
+            return services ? JSON.parse(services) : [];
+        }
+
+        // Save services to local storage
+        function saveServices(services) {
+            localStorage.setItem('services', JSON.stringify(services));
+        }
+
+        // Function to handle service registration and local storage
+        function registerService(event) {
+            event.preventDefault(); // Prevent the form from submitting
+
+            // Get form values
+            const description = $('#service-description').val();
+            const price = $('#service-price').val();
+
+            // Validate the input fields
+            let valid = true;
+
+            // Reset previous error messages
+            $('#description-error').text('');
+            $('#price-error').text('');
+
+            if (!description) {
+                $('#description-error').text('Service description is required.');
+                valid = false;
+            }
+
+            // Validate price (should be a positive number)
+            if (!price || isNaN(price) || parseFloat(price) <= 0) {
+                $('#price-error').text('Price must be a valid positive number.');
+                valid = false;
+            }
+
+            // If valid, register the service and store in local storage
+            if (valid) {
+                const newService = new Service(description, parseFloat(price));
+
+                // Get existing services from local storage
+                const services = loadServices();
+
+                // Add the new service
+                services.push(newService);
+
+                // Save the updated services to local storage
+                saveServices(services);
+
+                // Clear the form after successful registration
+                $('#service-form')[0].reset();
+
+                // Show success notification
+                showNotification('Service registered successfully!', 'success');
+            }
+        }
+    </script>
+
+</body>
+</html>
